@@ -1,50 +1,51 @@
 name: Translate Entire Repository
-
 on:
   push:
     branches:
       - main
+    paths:
+      - '**.md'
+      - '**.txt'
 
 jobs:
   translate:
     runs-on: ubuntu-latest
-
     steps:
-      # 1. 한국어 레포 체크아웃
       - name: Checkout Korean Repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # 전체 히스토리 필요
 
-      # 2. Python 설치 및 의존성 설치
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: '3.9'
+          cache: 'pip'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests
 
-      # 3. 영어 레포 클론
       - name: Clone English Repository
         env:
           ENGLISH_REPO_PAT: ${{ secrets.ENGLISH_REPO_PAT }}
         run: |
-          git clone https://x-access-token:${{ secrets.ENGLISH_REPO_PAT }}@github.com/kwan3854/-EN-UnityUIStoryboard-Docs.git english-repo
+          git clone https://x-access-token:${ENGLISH_REPO_PAT}@github.com/kwan3854/-EN-UnityUIStoryboard-Docs.git english-repo
+          cd english-repo
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git pull origin main
 
-      # 4. Python 스크립트 실행
       - name: Translate and Copy Files
         env:
           DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
         run: |
           python translate_and_copy.py
+        continue-on-error: true  # 일부 파일 실패해도 계속 진행
 
-      # 5. 영어 레포에 푸시
       - name: Push to English Repository
         run: |
           cd english-repo
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
           git add .
-          git commit -m "Translated repository content"
-          git push
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Translated repository content" && git push)
