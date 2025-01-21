@@ -14,8 +14,8 @@ flowchart TB
     %% UI Subgraph
     subgraph UI_MVRP_Stack['UI MVRP Stack']
       direction TB
-      Presenter((IPresenter - Presenter / Lifecycle))
-      Model((IModel - Model))
+      Presenter(Presenter / Lifecycle)
+      Model(Model)
       View(View)
     end
 
@@ -35,7 +35,7 @@ flowchart TB
     classDef interface fill:#f0f0f0,stroke:#333,stroke-width:1px,stroke-dasharray: 5 5,color:#333,font-style:italic;
 
     %% Apply interface style
-    class UseCases,Repository,Gateway,Presenter,Model interface
+    class UseCases,Repository,Gateway interface
 
     %% Dependency Injection Explanation
     subgraph DependencyInjection["DI (VContainer)"]
