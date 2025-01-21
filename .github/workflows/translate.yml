@@ -1,11 +1,9 @@
 name: Translate Entire Repository
+
 on:
   push:
     branches:
       - main
-    paths:
-      - '**.md'
-      - '**.txt'
 
 jobs:
   translate:
@@ -13,14 +11,18 @@ jobs:
     steps:
       - name: Checkout Korean Repository
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # 전체 히스토리 필요
+
+      - name: List Repository Contents
+        run: |
+          echo "Current directory contents:"
+          ls -la
+          echo "Working directory:"
+          pwd
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-          cache: 'pip'
 
       - name: Install dependencies
         run: |
@@ -31,21 +33,28 @@ jobs:
         env:
           ENGLISH_REPO_PAT: ${{ secrets.ENGLISH_REPO_PAT }}
         run: |
+          echo "Cloning English repository..."
           git clone https://x-access-token:${ENGLISH_REPO_PAT}@github.com/kwan3854/-EN-UnityUIStoryboard-Docs.git english-repo
           cd english-repo
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git pull origin main
+
+      - name: Check Python Script
+        run: |
+          echo "Checking if translation script exists:"
+          ls -la translate_and_copy.py
 
       - name: Translate and Copy Files
         env:
           DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
         run: |
+          echo "Starting translation process..."
           python translate_and_copy.py
-        continue-on-error: true  # 일부 파일 실패해도 계속 진행
+          echo "Translation process completed"
 
       - name: Push to English Repository
         run: |
           cd english-repo
           git add .
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Translated repository content" && git push)
+          git commit -m "Translated repository content" || echo "No changes to commit"
+          git push origin main || echo "No changes to push"
