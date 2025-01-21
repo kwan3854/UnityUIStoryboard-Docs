@@ -36,7 +36,8 @@ jobs:
       - name: Translate and Copy Files
         env:
           DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
-        run: python translate_and_copy.py
+        run: |
+          python translate_and_copy.py
 
       # 5. 영어 레포에 푸시
       - name: Push to English Repository
