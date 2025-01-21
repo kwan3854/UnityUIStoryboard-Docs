@@ -8,7 +8,7 @@
 ## 인터페이스 사용에 대해
 
 {% hint style="success" %}
-자세한 내용은 [undefined.md](undefined.md "mention") 참고
+자세한 내용은 [mvp.md](mvp.md "mention") 참고
 {% endhint %}
 
 * MVP 는 인터페이스를 사용하지 않고 바로 구현하는 것을 기본으로 한다.
