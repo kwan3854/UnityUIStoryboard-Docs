@@ -6,7 +6,7 @@ from pathlib import Path
 import time
 from typing import Optional
 
-# 로깅 설정
+# 로깅 설정.
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
