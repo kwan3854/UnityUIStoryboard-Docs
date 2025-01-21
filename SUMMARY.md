@@ -39,6 +39,7 @@
       * [Lifecycle (presenter)](ui-storyboard/undefined-1/ui/lifecycle-presenter.md)
       * [Model](ui-storyboard/undefined-1/ui/model.md)
       * [LifetimeScope](ui-storyboard/undefined-1/ui/lifetimescope.md)
+      * [RootLifetimeScope](ui-storyboard/undefined-1/ui/rootlifetimescope.md)
       * [UseCase](ui-storyboard/undefined-1/ui/usecase.md)
       * [Repository](ui-storyboard/undefined-1/ui/repository.md)
       * [Gateway](ui-storyboard/undefined-1/ui/gateway.md)
