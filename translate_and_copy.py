@@ -29,7 +29,7 @@ def translate_text(text: str, api_key: str, retries: int = 3) -> Optional[str]:
     for attempt in range(retries):
         try:
             response = requests.post(
-                url="https://api-free.deepl.com/v2/translate",
+                url="https://api.deepl.com/v2/translate",
                 data={
                     "auth_key": api_key,
                     "text": text,
