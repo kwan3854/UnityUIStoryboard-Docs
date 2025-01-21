@@ -70,8 +70,7 @@ public class SignInModalLifecycle : LifecycleModalBase
                 UpdateButtonState(currentId, currentPassword);
 
                 await UniTask.CompletedTask;
-            })
-            .AttachExternalCancellation(ExitCancellationToken)
+            }, ExitCancellationToken)
             .Forget();
 
         // Password input event processing
@@ -82,13 +81,14 @@ public class SignInModalLifecycle : LifecycleModalBase
                 UpdateButtonState(currentId, currentPassword);
                 
                 await UniTask.CompletedTask;
-            })
-            .AttachExternalCancellation(ExitCancellationToken)
+            }, ExitCancellationToken)
             .Forget();
         
         _view.OnSignInButtonClickedAsync
-            .ForEachAwaitAsync(async _ => await OnSignInButtonClicked())
-            .AttachExternalCancellation(ExitCancellationToken)
+            .ForEachAwaitAsync(async _ =>
+            {
+                await OnSignInButtonClicked();
+            }, ExitCancellationToken)
             .Forget();
     }
 
