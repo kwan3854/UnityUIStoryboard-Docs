@@ -34,6 +34,7 @@ def translate_text(text: str, api_key: str, retries: int = 3) -> Optional[str]:
                     "auth_key": api_key,
                     "text": text,
                     "target_lang": "EN"
+                    "source_lang": "KO"
                 },
                 timeout=30
             )
