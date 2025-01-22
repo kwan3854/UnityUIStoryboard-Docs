@@ -6,7 +6,7 @@
 
 `Window` -> `UI Storyboard` -> `Storyboard Manager` 클릭
 
-<figure><img src="../../../.gitbook/assets/스크린샷 2025-01-12 오전 12.10.44.png" alt=""><figcaption><p>Storyboard Manager</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/Storyboard7.png" alt=""><figcaption><p>Storyboard Manager</p></figcaption></figure>
 
 1. `Create Storyboard` 를 클릭해서 새로운 스토리 보드 생성
 2. 아래에 스토리보드가 생성됩니다.
@@ -16,6 +16,6 @@
 4. 생성된 폴더에 스토리보드를 드래그 앤 드롭해서 폴더 안에 정리해 둘 수 있습니다.
 5. 생성된 스토리보드를 더블클릭 해서 열 수 있습니다.
 
-<figure><img src="../../../.gitbook/assets/스크린샷 2025-01-12 오전 12.16.19 (1).png" alt=""><figcaption><p>Empty Storyboard</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/Storyboard5.png" alt=""><figcaption><p>Empty Storyboard</p></figcaption></figure>
 
 빈 스토리보드가 열렸습니다.

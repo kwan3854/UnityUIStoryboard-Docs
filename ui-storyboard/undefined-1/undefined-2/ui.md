@@ -9,17 +9,17 @@
 
 ### 에디터의 플레이어를 레퍼런스 해상도로 설정하기
 
-<figure><img src="../../../.gitbook/assets/스크린샷 2025-01-12 오후 12.03.30 (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/Guide5.png" alt=""><figcaption></figcaption></figure>
 
-<figure><img src="../../../.gitbook/assets/스크린샷 2025-01-12 오후 12.04.08 (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/ReferenceResolutionGuide3.png" alt=""><figcaption></figcaption></figure>
 
 ### 캔버스 해상도를 레퍼런스 해상도로 설정하기
 
-<figure><img src="../../../.gitbook/assets/스크린샷 2025-01-12 오후 12.04.53.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/Canvas.png" alt=""><figcaption></figcaption></figure>
 
-<figure><img src="../../../.gitbook/assets/스크린샷 2025-01-12 오후 12.05.32.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/ReferenceResolutionGuide2.png" alt=""><figcaption></figcaption></figure>
 
-<figure><img src="../../../.gitbook/assets/스크린샷 2025-01-12 오후 12.05.54.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/ReferenceResolutionGuide.png" alt=""><figcaption></figcaption></figure>
 
 ## 목업 UI 구성하기
 
@@ -28,4 +28,4 @@
 * 아래의 샘플은 Image 컴포넌트를 이용해 배경을 만들고
 * Button TextMeshPro 오브젝트를 생성해 로그인 버튼을 표현했습니다.
 
-<figure><img src="../../../.gitbook/assets/스크린샷 2025-01-12 오후 12.07.23.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/SignInPageMock.png" alt=""><figcaption></figcaption></figure>

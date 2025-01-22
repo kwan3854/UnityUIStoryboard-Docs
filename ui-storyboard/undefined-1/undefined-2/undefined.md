@@ -22,7 +22,7 @@
 
 ## 설정에서 레퍼런스 해상도를 등록
 
-<figure><img src="../../../.gitbook/assets/스크린샷 2025-01-11 오후 11.58.46.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/StoryboardSettings.png" alt=""><figcaption></figcaption></figure>
 
 * 여기서 등록한 레퍼런스 해상도는 스토리보드에서 Page 와 Modal 프리펩의 썸네일을 자동 생성될 때 기준으로 사용된다.
 * 추후 실제 게임에서 동작할 Canvas에서도 위의 해상도와 동일하게 세팅 해 놓고 사용한다.

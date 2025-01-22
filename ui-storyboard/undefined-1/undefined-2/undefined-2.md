@@ -28,7 +28,7 @@
 > _예: Item Shop Page, Alert Modal...._
 {% endhint %}
 
-<figure><img src="../../../.gitbook/assets/스크린샷 2025-01-12 오전 12.37.14.png" alt=""><figcaption><p>Example Storyboard</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/Storyboard1.png" alt=""><figcaption><p>Example Storyboard</p></figcaption></figure>
 
 * 세 개의 UI 요소로 구성되어 있습니다.
   * **Log In Page:** 로그인 버튼이 존재하는 최초 화면입니다.

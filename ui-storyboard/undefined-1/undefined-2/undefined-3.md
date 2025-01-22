@@ -8,7 +8,7 @@
 기획에서 논리적인 모순이 없는지, 명확하지 않게 정의된 기능이 있는지 기획 단계에서부터 꼭 점검하세요.
 {% endhint %}
 
-<figure><img src="../../../.gitbook/assets/스크린샷 2025-01-12 오후 1.38.12.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/Storyboard2png" alt=""><figcaption></figcaption></figure>
 
 UI/UX 디자이너와 개발자가 이해할 수 있도록
 

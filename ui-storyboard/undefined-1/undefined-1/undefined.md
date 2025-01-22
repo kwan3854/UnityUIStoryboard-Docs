@@ -10,19 +10,19 @@
 
 1. `Edit`-> `Project Settings...` 클릭
 
-<figure><img src="../../../.gitbook/assets/스크린샷 2025-01-11 오후 10.57.10.png" alt="" width="373"><figcaption><p>Project Settings</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/ProjectSettingsMenu.png" alt="" width="373"><figcaption><p>Project Settings</p></figcaption></figure>
 
 2. UI Storyboard 탭 선택 (최초 진입시 설정 변수 생성 버튼이 표시될 수 있음, 만약 표시된다면 클릭)
 3. `Project Name` 에 프로젝트 이름 입력
 4. `Initialize Project Structure`버튼 클릭
 
-<figure><img src="../../../.gitbook/assets/스크린샷 2025-01-11 오후 10.57.23 (2).png" alt=""><figcaption><p>UI Storyboard Settings</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/SettingInitialize.png" alt=""><figcaption><p>UI Storyboard Settings</p></figcaption></figure>
 
 ## 2. 자동 초기화는 어떤 일을 해 주나요?
 
 ### 폴더 구조를 생성해 줍니다.
 
-<figure><img src="../../../.gitbook/assets/스크린샷 2025-01-11 오후 11.10.31 (1).png" alt=""><figcaption><p>Directories</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/StoryboardDirectoryStructure.png" alt=""><figcaption><p>Directories</p></figcaption></figure>
 
 ### Assembly Definitions를 생성해 줍니다.
 
@@ -31,5 +31,5 @@
   * 가장 기본적으로 필요한 필수 asmdef 를 생성해줍니다.
   * 가장 기본적으로 필요한 필수 reference를 자동으로 생성해줍니다.
 
-<figure><img src="../../../.gitbook/assets/스크린샷 2025-01-11 오후 11.12.47.png" alt=""><figcaption><p>Assembly Definition</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/asmdef.png" alt=""><figcaption><p>Assembly Definition</p></figcaption></figure>
 
