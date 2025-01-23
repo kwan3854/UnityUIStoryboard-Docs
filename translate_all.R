@@ -38,8 +38,8 @@ for (f in md_files) {
   deepl_translate(
     path = f,
     out_path = out_f,
-    source_lang = "KO-KR",
-    target_lang = "EN-US"
+    source_lang = "KO",
+    target_lang = "EN"
   )
 
   cat("Translated ->", out_f, "\n")
