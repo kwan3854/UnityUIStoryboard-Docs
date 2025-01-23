@@ -23,6 +23,10 @@ jobs:
         run: |
           npm install @rmw/deepl-markdown-translate
 
+      - name: Create package.json (ES Module)
+        run: |
+          echo '{"type":"module","dependencies":{}}' > package.json
+
       # 기존 영어 저장소를 Clone해오는 단계
       - name: Clone English Repository
         env:
