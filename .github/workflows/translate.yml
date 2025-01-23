@@ -1,116 +1,45 @@
-name: Translate to English using Deepmark
+name: MD to XLIFF -> DeepL -> MD
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   translate:
     runs-on: ubuntu-latest
     steps:
-      ##################################################
-      # 1. 원본(KO) 리포 체크아웃
-      ##################################################
-      - name: Checkout Korean Repository
+      - name: Checkout source
         uses: actions/checkout@v3
 
-      ##################################################
-      # 2. 영어(번역 결과) 리포 체크아웃
-      ##################################################
-      - name: Clone English Repository
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+
+      - name: Install dependencies
+        run: |
+          npm init -y
+          npm install @diplodoc/markdown-translation node-fetch form-data
+
+      - name: Clone English Repo
         env:
           ENGLISH_REPO_PAT: ${{ secrets.ENGLISH_REPO_PAT }}
         run: |
-          git clone https://x-access-token:${ENGLISH_REPO_PAT}@github.com/kwan3854/-EN-UnityUIStoryboard-Docs.git english-repo
+          git clone https://x-access-token:${ENGLISH_REPO_PAT}@github.com/YourOrg/YourEnglishRepo.git english-repo
           cd english-repo
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-      ##################################################
-      # 3. Node & Deepmark 설치
-      ##################################################
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-      
-      - name: Init package.json & Install Deepmark + fast-glob
-        run: |
-          npm init -y
-          # deepmark와 fast-glob 둘 다 설치
-          npm install -D deepmark fast-glob
-
-      ##################################################
-      # 4. Deepmark 설정 파일 생성
-      ##################################################
-      - name: Create deepmark.config.mjs
-        run: |
-          echo '/** @type {import("deepmark").UserConfig} */' > deepmark.config.mjs
-          echo 'export default {' >> deepmark.config.mjs
-          echo '  sourceLanguage: "ko",' >> deepmark.config.mjs
-          echo '  outputLanguages: ["en"],' >> deepmark.config.mjs
-          echo '  directories: [' >> deepmark.config.mjs
-          # 예: 루트 전체를 번역하되, 결과는 "tmp/$langcode$" 폴더로 출력
-          echo '    [".", "tmp/$langcode$"]' >> deepmark.config.mjs
-          echo '  ],' >> deepmark.config.mjs
-          # 번역할 파일과 제외할 폴더를 지정
-          echo '  files: {' >> deepmark.config.mjs
-          echo '    include: ["**/*.md"],' >> deepmark.config.mjs
-          echo '    exclude: [' >> deepmark.config.mjs
-          echo '      "node_modules/**", "english-repo/**",' >> deepmark.config.mjs
-          echo '      ".github/**", ".git/**", "tmp/**", ".gitbook/**"' >> deepmark.config.mjs
-          echo '    ]' >> deepmark.config.mjs
-          echo '  }' >> deepmark.config.mjs
-          echo '};' >> deepmark.config.mjs
-
-      ##################################################
-      # 5. Deepmark 번역 실행 ( .md → tmp/en/… )
-      ##################################################
-      - name: Run Deepmark
+      - name: Extract & DeepL Compose
         env:
-          DEEPL_AUTH_KEY: ${{ secrets.DEEPL_API_KEY }} # DeepL API 키
+          DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
         run: |
-          npx deepmark translate --mode online
-          # --mode online : 무조건 DeepL API 호출 (기존 번역메모리 덮어씀)
-          # --mode hybrid : 메모리에 있는 건 재활용 & 없는 건 DeepL 호출
-          # --mode offline: 메모리에서만 번역(DeepL 호출X)
+          node extract_and_deepl.js
 
-      ##################################################
-      # 6. .gitbook 폴더, 기타 .md 아닌 파일 복사
-      ##################################################
-      # Deepmark는 .md/.mdx만 번역하므로, 이미지나 .gitbook 등은
-      # tmp/en/ 폴더에 아직 없음 → 직접 rsync/복사
-      - name: Copy non-md files & .gitbook
+      - name: Copy to English Repo
         run: |
-          # rsync로 .md 제외하고 tmp/en 폴더에 덮어쓰기
-          # --exclude='*.md' 로 .md는 이미 번역본이 있음
-          # --exclude=... 여러가지 패턴 추가 가능
-          rsync -av \
-            --exclude='.git' \
-            --exclude='.github' \
-            --exclude='node_modules' \
-            --exclude='english-repo' \
-            --exclude='tmp' \
-            --exclude='*.md' \
-            . tmp/en/
-
-          # 별도로 .gitbook 폴더만 tmp/en/에 복사 (만약 .gitbook이 위에서 exclude 되어있다면)
-          # 혹은 rsync --exclude 패턴에서 .gitbook을 제외하면 자동 복사될 수도 있습니다.
-          # 아래는 예시
-          cp -r .gitbook tmp/en/.gitbook 2>/dev/null || true
-
-      ##################################################
-      # 7. 영어 리포에 최종 결과 반영
-      ##################################################
-      - name: Move translated files into english-repo
-        run: |
-          rm -rf english-repo/*  # 영어 리포 내부 초기화(원하시면 유지 가능)
-          cp -r tmp/en/* english-repo
-
-      - name: Commit & Push to English Repository
-        run: |
+          cp README.en.md english-repo/
           cd english-repo
           git add .
-          git commit -m "Deepmark translation (ko -> en)" || echo "No changes to commit"
-          git push origin main || echo "No changes to push"
+          git commit -m "Auto-translated README" || echo "No changes"
+          git push origin main || echo "No changes"
