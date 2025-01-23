@@ -108,7 +108,7 @@ async function downloadTranslatedXlf(document_id, document_key, outputPath) {
       console.log("Skeleton:", skeleton);
       console.log("XLF:", xlf);
 
-      if (!skeleton || skeleton.trim().length === 0) {
+      if (!xlf || xlf.trim().length === 0) {
         console.log("No skeleton content (maybe no translatable text?) Skipping...");
         continue;
       }
