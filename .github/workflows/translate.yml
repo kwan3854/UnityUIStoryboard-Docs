@@ -35,10 +35,11 @@ jobs:
         with:
           node-version: '16.x'
       
-      - name: Init package.json & Install Deepmark
+      - name: Init package.json & Install Deepmark + fast-glob
         run: |
           npm init -y
-          npm install -D deepmark
+          # deepmark와 fast-glob 둘 다 설치
+          npm install -D deepmark fast-glob
 
       ##################################################
       # 4. Deepmark 설정 파일 생성
