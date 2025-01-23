@@ -24,8 +24,10 @@ jobs:
         run: |
           npm install @diplodoc/markdown-translation node-fetch form-data
           # node-fetch 최신(v3) 설치 → ESM용
-        
-      - name: Run ESM Script
+
+      - name: Extract & DeepL Compose
+        env:
+          DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
         run: |
           node extract_and_deepl.mjs
 
@@ -37,12 +39,6 @@ jobs:
           cd english-repo
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-
-      - name: Extract & DeepL Compose
-        env:
-          DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
-        run: |
-          node extract_and_deepl.js
 
       - name: Copy to English Repo
         run: |
