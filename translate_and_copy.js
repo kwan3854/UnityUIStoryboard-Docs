@@ -1,21 +1,24 @@
-// translate_and_copy.js (CJS)
-const fs = require('fs')
-const path = require('path')
-const translate = require('@rmw/deepl-markdown-translate')
+// ESM 예시
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+// @rmw/deepl-markdown-translate는 ESM 형태로 배포
+import translate from '@rmw/deepl-markdown-translate'
 
 const DEEPL_API_KEY = process.env.DEEPL_API_KEY
 if (!DEEPL_API_KEY) {
-  throw new Error('DEEPL_API_KEY is not set.')
+  throw new Error('DEEPL_API_KEY is not set')
 }
 
-// 현재 디렉토리(소스)와 'english-repo'(결과물) 설정
-const sourceDir = __dirname
-const targetDir = path.join(__dirname, 'english-repo')
+// __dirname/_filename 대용
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
-// 무시 패턴
+const sourceDir = process.cwd()              // 현재 폴더(소스)
+const targetDir = path.join(__dirname, 'english-repo')  // 번역 결과
+
 const IGNORED_DIRS = ['.git', '.github', 'node_modules', 'english-repo']
-
-// 번역 대상 확장자
 const EXTENSIONS = ['.md', '.txt']
 
 async function walkAndTranslate(currentPath) {
@@ -24,8 +27,8 @@ async function walkAndTranslate(currentPath) {
   for (const entry of entries) {
     const entryPath = path.join(currentPath, entry.name)
 
-    // 무시할 폴더면 스킵
-    if (IGNORED_DIRS.some((ignore) => entryPath.includes(ignore))) {
+    // 무시할 폴더
+    if (IGNORED_DIRS.some(ignore => entryPath.includes(ignore))) {
       continue
     }
 
@@ -37,15 +40,17 @@ async function walkAndTranslate(currentPath) {
       }
       await walkAndTranslate(entryPath)
     } else {
+      // 파일
       const ext = path.extname(entry.name).toLowerCase()
       if (EXTENSIONS.includes(ext)) {
         const content = fs.readFileSync(entryPath, 'utf-8')
-        // @rmw/deepl-markdown-translate → CoffeeScript/CJS 내부에서 동작
+        // ESM import: translate 함수
+        // 라이브러리 내부적으로 coffee-script를 쓸 수 있으나, 여긴 ESM
         const translated = await translate(content, 'EN')
         fs.writeFileSync(targetPath, translated, 'utf-8')
         console.log(`Translated: ${entryPath} -> ${targetPath}`)
       } else {
-        // 그냥 복사
+        // 그 외 복사
         fs.copyFileSync(entryPath, targetPath)
       }
     }

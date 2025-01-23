@@ -1,4 +1,4 @@
-name: Translate Repository (Node.js)
+name: Translate via @rmw/deepl-markdown-translate (ESM)
 
 on:
   push:
@@ -9,21 +9,21 @@ jobs:
   translate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Korean Repository
+      - name: Checkout
         uses: actions/checkout@v3
 
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          # Node 16 / 18 / LTS 중 하나
-          node-version: '16.x'
-      
-      - name: Install npm dependencies
-        run: |
-          npm install @rmw/deepl-markdown-translate
-          # package.json 자동 생성 (npm init -y) 할 수도 있지만,
-          # 어차피 단순 설치만으로 node_modules가 생기면 사용 가능
+          node-version: '16.x'  # 또는 18.x
 
+      # 1) package.json 생성 + npm install
+      - name: Prepare & Install
+        run: |
+          echo '{"type":"module","dependencies":{"@rmw/deepl-markdown-translate":"^0.0.7"}}' > package.json
+          npm install
+
+      # 2) Clone 영어 저장소
       - name: Clone English Repository
         env:
           ENGLISH_REPO_PAT: ${{ secrets.ENGLISH_REPO_PAT }}
@@ -33,15 +33,16 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-      - name: Translate Markdown using Node script
+      # 3) 번역 스크립트 실행
+      - name: Translate
         env:
           DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
-        run: |
-          node translate_and_copy.js
+        run: node translate_and_copy.js
 
-      - name: Push to English Repository
+      # 4) 커밋 & 푸시
+      - name: Push changes
         run: |
           cd english-repo
           git add .
-          git commit -m "Translated repository content" || echo "No changes to commit"
-          git push origin main || echo "No changes to push"
+          git commit -m "Translated repository content" || echo "Nothing to commit"
+          git push origin main || echo "Nothing to push"
