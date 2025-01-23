@@ -1,9 +1,8 @@
-// extract_and_deepl.js
-const fs = require("fs");
-const path = require("path");
-const fetch = require("node-fetch");
-const FormData = require("form-data");
-const { extract, compose } = require("@diplodoc/markdown-translation");
+import fs from 'fs';
+import path from 'path';
+import fetch from 'node-fetch';
+import FormData from 'form-data';
+import { extract, compose } from '@diplodoc/markdown-translation';
 
 const DEEPL_API_KEY = process.env.DEEPL_API_KEY;
 if (!DEEPL_API_KEY) {

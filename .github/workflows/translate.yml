@@ -16,10 +16,18 @@ jobs:
         with:
           node-version: '18.x'
 
+      - name: Create package.json
+        run: |
+          echo '{"type":"module","dependencies":{}}' > package.json
+        
       - name: Install dependencies
         run: |
-          npm init -y
           npm install @diplodoc/markdown-translation node-fetch form-data
+          # node-fetch 최신(v3) 설치 → ESM용
+        
+      - name: Run ESM Script
+        run: |
+          node extract_and_deepl.mjs
 
       - name: Clone English Repo
         env:
