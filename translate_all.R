@@ -39,7 +39,7 @@ for (f in md_files) {
     path = f,
     out_path = out_f,
     source_lang = "KO",
-    target_lang = "EN"
+    target_lang = "EN-US"
   )
 
   cat("Translated ->", out_f, "\n")
