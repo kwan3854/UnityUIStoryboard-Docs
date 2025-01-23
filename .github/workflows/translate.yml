@@ -21,7 +21,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install @diplodoc/markdown-translation@1.1.0 node-fetch form-data
+          npm install diplodoc-platform/translation#v1.5.1
 
       # 영어 리포를 먼저 클론
       - name: Clone English Repo
