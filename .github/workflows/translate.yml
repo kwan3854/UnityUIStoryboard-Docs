@@ -2,211 +2,28 @@ name: Translate All MD via XLIFF + DeepL
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   translate:
     runs-on: ubuntu-latest
     steps:
-      ##################################################
-      # 1. 원본 리포 체크아웃
-      ##################################################
       - name: Checkout source
         uses: actions/checkout@v3
 
-      ##################################################
-      # 2. Node 설치
-      ##################################################
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
 
-      ##################################################
-      # 3. ESM 사용 위한 package.json
-      ##################################################
       - name: Create package.json
-        run: |
-          echo '{"type":"module"}' > package.json
+        run: echo '{"type":"module"}' > package.json
 
-      ##################################################
-      # 4. 의존성 설치
-      ##################################################
       - name: Install dependencies
         run: |
           npm install @diplodoc/markdown-translation node-fetch form-data
-          # node-fetch v3 / ESM 전용
 
-      ##################################################
-      # 5. Create extract_and_deepl_all.mjs (스크립트)
-      ##################################################
-      - name: Create script
-        run: |
-          cat << 'EOF' > extract_and_deepl_all.mjs
-          import fs from 'fs';
-          import path from 'path';
-          import fetch from 'node-fetch';
-          import FormData from 'form-data';
-          import { extract, compose } from '@diplodoc/markdown-translation';
-
-          const DEEPL_API_KEY = process.env.DEEPL_API_KEY;
-          if (!DEEPL_API_KEY) {
-            throw new Error("DEEPL_API_KEY not set!");
-          }
-
-          // DeepL 문서 번역 (Document API) endpoint
-          const DEEPL_DOC_ENDPOINT = "https://api.deepl.com/v2/document";
-
-          // 0) .md 파일 찾기
-          function getAllMdFiles(dir, fileList = []) {
-            const ignore = ['.git', '.github', 'node_modules', 'english-repo'];
-            const entries = fs.readdirSync(dir, { withFileTypes: true });
-            for (const entry of entries) {
-              const fullPath = path.join(dir, entry.name);
-              // 무시 폴더
-              if (ignore.includes(entry.name)) {
-                continue;
-              }
-              if (entry.isDirectory()) {
-                getAllMdFiles(fullPath, fileList);
-              } else if (
-                entry.isFile() &&
-                path.extname(entry.name).toLowerCase() === '.md'
-              ) {
-                fileList.push(fullPath);
-              }
-            }
-            return fileList;
-          }
-
-          async function uploadXlfToDeepL(xlfPath, sourceLang, targetLang) {
-            const form = new FormData();
-            form.append("auth_key", DEEPL_API_KEY);
-            form.append("source_lang", sourceLang);
-            form.append("target_lang", targetLang);
-            form.append("file", fs.createReadStream(xlfPath));
-
-            const res = await fetch(DEEPL_DOC_ENDPOINT, {
-              method: "POST",
-              body: form,
-            });
-            if (!res.ok) {
-              const text = await res.text();
-              throw new Error(\`DeepL upload failed: \${res.status} - \${text}\`);
-            }
-
-            const { document_id, document_key } = await res.json();
-            return { document_id, document_key };
-          }
-
-          async function waitForDocumentDone(document_id, document_key) {
-            while (true) {
-              const url = \`\${DEEPL_DOC_ENDPOINT}/\${document_id}?auth_key=\${DEEPL_API_KEY}&document_key=\${document_key}\`;
-              const statusRes = await fetch(url);
-              const data = await statusRes.json();
-
-              if (data.status === "done") {
-                return;
-              } else if (data.status === "error") {
-                throw new Error(\`DeepL doc translation error: \${JSON.stringify(data)}\`);
-              } else {
-                console.log(\`DeepL doc status: \${data.status}, progress: \${data.document_progress}%\`);
-                await new Promise((resolve) => setTimeout(resolve, 3000));
-              }
-            }
-          }
-
-          async function downloadTranslatedXlf(document_id, document_key, outputPath) {
-            const url = \`\${DEEPL_DOC_ENDPOINT}/\${document_id}/result?auth_key=\${DEEPL_API_KEY}&document_key=\${document_key}\`;
-            const res = await fetch(url);
-            if (!res.ok) {
-              const text = await res.text();
-              throw new Error(\`DeepL download failed: \${res.status} - \${text}\`);
-            }
-            const buffer = await res.arrayBuffer();
-            fs.writeFileSync(outputPath, Buffer.from(buffer));
-            console.log(\`Downloaded XLF => \${outputPath}\`);
-          }
-
-          // 실제 메인 로직
-          (async () => {
-            try {
-              // 1) 현재 repo에서 모든 .md 파일 찾기
-              const sourceDir = process.cwd();
-              const mdFiles = getAllMdFiles(sourceDir);
-              console.log("Found .md files:", mdFiles);
-
-              // 2) 각 파일마다 처리
-              for (const mdFilePath of mdFiles) {
-                console.log(\`===== Translating \${mdFilePath} =====\`);
-                const content = fs.readFileSync(mdFilePath, 'utf-8');
-
-                // extract -> skeleton, xlf
-                const { skeleton, xlf } = extract({
-                  markdown: content,
-                  source: { language: "ko", locale: "KR" },
-                  target: { language: "en", locale: "US" },
-                  skeletonPath: mdFilePath + ".skl.md",
-                  markdownPath: mdFilePath,
-                });
-
-                // 만약 xlf가 undefined/빈문자라면 skip
-                if (!xlf || xlf.trim().length === 0) {
-                  console.log("No XLF content (maybe no translatable text?) Skipping...");
-                  continue;
-                }
-
-                // 저장
-                const skeletonPath = mdFilePath + ".skl.md";
-                const xlfPath = mdFilePath + ".xlf";
-                fs.writeFileSync(skeletonPath, skeleton, 'utf-8');
-                fs.writeFileSync(xlfPath, xlf, 'utf-8');
-
-                // DeepL Document Translation
-                const { document_id, document_key } = await uploadXlfToDeepL(xlfPath, "KO", "EN");
-                console.log(\`Uploaded => doc_id=\${document_id} key=\${document_key}\`);
-
-                await waitForDocumentDone(document_id, document_key);
-                console.log("DeepL done. Downloading...");
-
-                const translatedXlfPath = mdFilePath + ".translated.xlf";
-                await downloadTranslatedXlf(document_id, document_key, translatedXlfPath);
-
-                // compose -> 최종 영문 md
-                const newSkeleton = fs.readFileSync(skeletonPath, 'utf-8');
-                const newXlf = fs.readFileSync(translatedXlfPath, 'utf-8');
-                const finalMd = compose({
-                  skeleton: newSkeleton,
-                  xlf: newXlf,
-                });
-
-                const relative = path.relative(sourceDir, mdFilePath); // docs/Intro.md
-                const enTarget = path.join("english-repo", relative);
-                fs.mkdirSync(path.dirname(enTarget), { recursive: true });
-                fs.writeFileSync(enTarget, finalMd, "utf-8");
-              }
-
-              console.log("All .md files processed!");
-            } catch (err) {
-              console.error("Error:", err);
-              process.exit(1);
-            }
-          })();
-          EOF
-
-      ##################################################
-      # 6. 실행 (모든 .md를 번역)
-      ##################################################
-      - name: Extract & DeepL Compose (All MD)
-        env:
-          DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
-        run: |
-          node extract_and_deepl_all.mjs
-
-      ##################################################
-      # 7. Clone English Repo & Push
-      ##################################################
+      # 영어 리포를 먼저 클론
       - name: Clone English Repo
         env:
           ENGLISH_REPO_PAT: ${{ secrets.ENGLISH_REPO_PAT }}
@@ -215,16 +32,17 @@ jobs:
           cd english-repo
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
+          cd ..
 
-      - name: Copy translated files to English Repo
+      - name: Translate All
+        env:
+          DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
         run: |
-          # 예: .en.md 로 끝나는 파일들을 전부 english-repo/ 로 복사
-          mv *.en.md english-repo/
+          node extract_and_deepl_all.mjs
 
-          # 그 외, 필요시 이미지/기타 폴더도 복사
-          # rsync -av --exclude='*.md' . english-repo/
-
+      - name: Commit & Push
+        run: |
           cd english-repo
           git add .
-          git commit -m "Auto-translated all .md to .en.md" || echo "No changes"
+          git commit -m "Auto-translated all .md" || echo "No changes"
           git push origin main || echo "No changes"
