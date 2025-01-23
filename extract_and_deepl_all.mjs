@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import fetch from 'node-fetch';
 import FormData from 'form-data';
-import { extract, compose } from '@diplodoc/markdown-translation';
+import { extract, compose } from '@diplodoc/translation';
 
 // DeepL API Key
 const DEEPL_API_KEY = process.env.DEEPL_API_KEY;
