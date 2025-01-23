@@ -22,7 +22,7 @@ jobs:
         env:
           ENGLISH_REPO_PAT: ${{ secrets.ENGLISH_REPO_PAT }}
         run: |
-          git clone https://x-access-token:${ENGLISH_REPO_PAT}@github.com/YOUR_ORG/YOUR_ENGLISH_REPO.git english-repo
+          git clone https://x-access-token:${ENGLISH_REPO_PAT}@github.com/kwan3854/-EN-UnityUIStoryboard-Docs.git english-repo
           cd english-repo
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
