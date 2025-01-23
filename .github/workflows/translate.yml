@@ -12,22 +12,18 @@ jobs:
       - name: Checkout Korean Repository
         uses: actions/checkout@v3
 
-      # Node 환경 셋업
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
+          # Node 16 / 18 / LTS 중 하나
           node-version: '16.x'
-
-      # npm 의존성 설치
+      
       - name: Install npm dependencies
         run: |
           npm install @rmw/deepl-markdown-translate
+          # package.json 자동 생성 (npm init -y) 할 수도 있지만,
+          # 어차피 단순 설치만으로 node_modules가 생기면 사용 가능
 
-      - name: Create package.json (ES Module)
-        run: |
-          echo '{"type":"module","dependencies":{}}' > package.json
-
-      # 기존 영어 저장소를 Clone해오는 단계
       - name: Clone English Repository
         env:
           ENGLISH_REPO_PAT: ${{ secrets.ENGLISH_REPO_PAT }}
@@ -37,14 +33,12 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-      # 실제로 번역을 수행하는 Node.js 스크립트를 실행
       - name: Translate Markdown using Node script
         env:
           DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
         run: |
           node translate_and_copy.js
 
-      # 번역된 결과를 git push
       - name: Push to English Repository
         run: |
           cd english-repo
