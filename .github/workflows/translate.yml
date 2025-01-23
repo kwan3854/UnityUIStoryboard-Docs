@@ -1,4 +1,4 @@
-name: Translate Entire Repository
+name: Translate Repository (Node.js)
 
 on:
   push:
@@ -12,46 +12,35 @@ jobs:
       - name: Checkout Korean Repository
         uses: actions/checkout@v3
 
-      - name: List Repository Contents
-        run: |
-          echo "Current directory contents:"
-          ls -la
-          echo "Working directory:"
-          pwd
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      # Node 환경 셋업
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
-          python-version: '3.9'
+          node-version: '16.x'
 
-      - name: Install dependencies
+      # npm 의존성 설치
+      - name: Install npm dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install requests
+          npm install @rmw/deepl-markdown-translate
 
+      # 기존 영어 저장소를 Clone해오는 단계
       - name: Clone English Repository
         env:
           ENGLISH_REPO_PAT: ${{ secrets.ENGLISH_REPO_PAT }}
         run: |
-          echo "Cloning English repository..."
           git clone https://x-access-token:${ENGLISH_REPO_PAT}@github.com/kwan3854/-EN-UnityUIStoryboard-Docs.git english-repo
           cd english-repo
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-      - name: Check Python Script
-        run: |
-          echo "Checking if translation script exists:"
-          ls -la translate_and_copy.py
-
-      - name: Translate and Copy Files
+      # 실제로 번역을 수행하는 Node.js 스크립트를 실행
+      - name: Translate Markdown using Node script
         env:
           DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
         run: |
-          echo "Starting translation process..."
-          python translate_and_copy.py
-          echo "Translation process completed"
+          node translate_and_copy.js
 
+      # 번역된 결과를 git push
       - name: Push to English Repository
         run: |
           cd english-repo
