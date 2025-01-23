@@ -1,6 +1,6 @@
 # translate_all.R
 # 의존성: babeldown, (그리고 brio, withr, etc.가 babeldown 내부에서 사용)
-Sys.setenv("DEEPL_API_URL" = "https://api.deepl.com/v2/translate")
+Sys.setenv("DEEPL_API_URL" = "https://api.deepl.com")
 
 
 # 1) 모든 .md 파일을 찾는다
