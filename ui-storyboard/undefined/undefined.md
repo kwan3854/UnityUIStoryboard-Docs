@@ -1,5 +1,9 @@
 # 전체 구조 도표
 
+{% hint style="success" %}
+**MVP와 MVVM의 하이브리드 방식을 사용합니다.** MVRP라는 것도 있습니다만, 딱 잘라서 MVRP라고 하기에도 정확한 표현이 아닌 구조를 취하고 있습니다.
+{% endhint %}
+
 ```mermaid
 flowchart TB
     %% Onion Architecture Subgraph
@@ -15,7 +19,7 @@ flowchart TB
     subgraph UI_MVRP_Stack['UI MVRP Stack']
       direction TB
       Presenter(Presenter / Lifecycle)
-      Model(Model)
+      ViewModel(ViewModel)
       View(View)
     end
 
@@ -28,7 +32,7 @@ flowchart TB
     Repository --> Gateway
     
     Presenter --> UseCases
-    Presenter --> Model
+    Presenter --> ViewModel
     Presenter --> View
 
     %% Notes and Dependency Injection

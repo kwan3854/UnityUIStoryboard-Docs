@@ -1,9 +1,10 @@
-# Model, View, Presenter(Lifecycle) 세트
+# Model, View, Presenter(Lifecycle)
 
 ## 개발 단위
 
-* Page/Modal 당 1개의 Model, 1개의 Presenter, 1개의 View를 기본 단위로 삼는다.
-* 복잡도에 따라 Model이나 View를 여러 개 구성할 수 있지만, 최종적으로는 단일 Model, 단일 View 형태로 “합쳐”서 사용하는 것을 권장.
+* Page/Modal 당 1개의 Presenter, 1개의 View, 1개의 ViewModel 를 기본 단위로 삼는다.
+* 복잡도에 따라 ViewModel이나 View를 여러 개 구성할 수 있지만, 최종적으로는 단일 View 형태로 “합쳐”서 사용하는 것을 권장.
+* 실제 MVP에서 Model 역할은 Repository가 하고, 이 Repository는 여러곳에서 공유되어서 사용될 수 있다. (어니언 아키텍처 참고)&#x20;
 
 ## 인터페이스 사용에 대해
 
