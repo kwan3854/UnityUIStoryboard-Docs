@@ -1,6 +1,6 @@
 # translate_all.R
 # 의존성: babeldown, (그리고 brio, withr, etc.가 babeldown 내부에서 사용)
-Sys.setenv("DEEPL_API_URL" = "https://api.deepl.com")
+Sys.setenv("DEEPL_API_URL" = "https://api.deepl.com/v2/translate")
 
 
 # 1) 모든 .md 파일을 찾는다
@@ -38,8 +38,8 @@ for (f in md_files) {
   deepl_translate(
     path = f,
     out_path = out_f,
-    source_lang = "KO", 
-    target_lang = "EN"
+    source_lang = "KO-KR",
+    target_lang = "EN-US"
   )
 
   cat("Translated ->", out_f, "\n")
