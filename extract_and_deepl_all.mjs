@@ -104,8 +104,12 @@ async function downloadTranslatedXlf(document_id, document_key, outputPath) {
         markdownPath: mdFilePath,
       });
 
-      if (!xlf || xlf.trim().length === 0) {
-        console.log("No XLF content (maybe no translatable text?) Skipping...");
+      // log skeleton and xlf
+      console.log("Skeleton:", skeleton);
+      console.log("XLF:", xlf);
+
+      if (!skeleton || skeleton.trim().length === 0) {
+        console.log("No skeleton content (maybe no translatable text?) Skipping...");
         continue;
       }
 
