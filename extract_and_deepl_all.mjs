@@ -101,7 +101,7 @@ async function downloadTranslatedXlf(document_id, document_key, outputPath) {
         source: { language: "ko", locale: "KR" },
         target: { language: "en", locale: "US" },
         skeletonPath: mdFilePath + ".skl.md",
-        markdownPath: mdFilePath,
+        markdownPath: mdFilePath + ".text.md",
       });
 
       // log skeleton and xlf
