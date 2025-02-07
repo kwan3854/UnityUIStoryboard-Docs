@@ -48,7 +48,6 @@
     * [\[개발자\] 테스트/목업 코드 작성하기](ui-storyboard/undefined-1/undefined-3/README.md)
       * [목업 코드의 강력함](ui-storyboard/undefined-1/undefined-3/undefined.md)
       * [목업 코드 작성하기](ui-storyboard/undefined-1/undefined-3/undefined-1.md)
-      * [테스트 해 보기](ui-storyboard/undefined-1/undefined-3/undefined-2.md)
     * [완성된 목업 UI](ui-storyboard/undefined-1/ui-1.md)
 * [UnityScreenNavigator](unityscreennavigator/README.md)
   * [Lifecycle](unityscreennavigator/lifecycle.md)
